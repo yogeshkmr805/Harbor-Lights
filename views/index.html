@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harbor Lights Volunteer Shifts</title>
+  <style>
+    :root {
+      --navy: #13324f;
+      --navy-light: #1f5f8b;
+      --gold: #c8962e;
+      --bg: #f4f6f9;
+      --surface: #ffffff;
+      --text: #1d2733;
+      --muted: #6b7785;
+      --border: #dde3ea;
+      --success-bg: #e8f5ec;
+      --success-text: #1e5b2e;
+      --error-bg: #fdecea;
+      --error-text: #8a1c1c;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--navy), var(--navy-light));
+      color: #fff;
+      padding: 2.25rem 1.5rem 2rem;
+      border-bottom: 4px solid var(--gold);
+    }
+    header .eyebrow {
+      margin: 0;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+    header h1 {
+      margin: 0.25rem 0 0;
+      font-size: 1.9rem;
+      font-weight: 600;
+    }
+    header p {
+      margin: 0.5rem 0 0;
+      opacity: 0.9;
+      max-width: 560px;
+    }
+
+    main {
+      max-width: 960px;
+      margin: -1.25rem auto 3rem;
+      padding: 0 1.25rem;
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 800px) {
+      main { grid-template-columns: 1.4fr 1fr; align-items: start; }
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 14px rgba(19, 50, 79, 0.06);
+    }
+    .panel-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 0 1rem;
+    }
+    .panel h2 {
+      margin: 0;
+      font-size: 1.1rem;
+      color: var(--navy);
+      font-weight: 600;
+    }
+    .live {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .shift {
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--navy-light);
+      border-radius: 8px;
+      padding: 0.9rem 1rem;
+      margin-bottom: 0.9rem;
+      background: #fbfcfd;
+    }
+    .shift.full { border-left-color: #b8c0ca; }
+    .shift-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .shift-title { font-weight: 600; color: var(--navy); }
+    .badge {
+      font-size: 0.78rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .badge.open { background: #fdf3df; color: #8a5d0b; }
+    .badge.full { background: #eceff2; color: var(--muted); }
+    .signed-label {
+      margin: 0.7rem 0 0.2rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .names {
+      margin: 0;
+      padding-left: 1.1rem;
+      font-size: 0.95rem;
+    }
+    .names .empty { color: var(--muted); font-style: italic; }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--navy);
+    }
+    input, select {
+      width: 100%;
+      margin-top: 0.35rem;
+      padding: 0.6rem 0.75rem;
+      font: inherit;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+    }
+    input:focus, select:focus {
+      outline: 2px solid var(--navy-light);
+      outline-offset: 1px;
+      border-color: transparent;
+    }
+
+    button.primary {
+      margin-top: 1.25rem;
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font: inherit;
+      font-weight: 600;
+      color: #fff;
+      background: var(--navy);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    button.primary:hover:not(:disabled) { background: var(--navy-light); }
+    button.primary:disabled { background: #9aa5b1; cursor: not-allowed; }
+
+    .msg {
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+    }
+    .msg:empty { display: none; }
+    .msg.ok { background: var(--success-bg); color: var(--success-text); }
+    .msg.err { background: var(--error-bg); color: var(--error-text); }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding-bottom: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <p class="eyebrow">Harbor Lights Youth Center</p>
+    <h1>Volunteer Shift Sign-Up</h1>
+    <p>Choose an available shift below. Spots are shown as they fill, so please sign up early.</p>
+  </header>
+
+  <main>
+    <section class="panel">
+      <div class="panel-title">
+        <h2>Available Shifts</h2>
+        <span class="live" id="last-updated"></span>
+      </div>
+      <div id="shift-list"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Register Your Shift</h2>
+      <form id="signup-form">
+        <label for="shift">Shift</label>
+        <select id="shift" required></select>
+
+        <label for="name">Full name</label>
+        <input id="name" type="text" maxlength="80" placeholder="e.g. Jane Smith" required>
+
+        <button type="submit" id="submit-btn" class="primary">Confirm Sign-Up</button>
+      </form>
+      <div id="msg" class="msg"></div>
+    </section>
+  </main>
+
+  <footer>Harbor Lights Youth Center &middot; Volunteer Coordination</footer>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const esc = (text) => {
+      const d = document.createElement('div');
+      d.textContent = text;
+      return d.innerHTML;
+    };
+
+    // Refresh the list every few seconds so newly signed-up volunteers
+    // appear without reloading the page.
+    const REFRESH_MS = 5000;
+
+    async function loadShifts() {
+      try {
+        const res = await fetch('/api/shifts', { cache: 'no-store' });
+        if (!res.ok) throw new Error('Could not load shifts.');
+        const shifts = await res.json();
+
+        $('shift-list').innerHTML = shifts.map((s) => {
+          const signed = s.signedUp.length;
+          const spotsLeft = s.capacity - signed;
+          const isFull = spotsLeft <= 0;
+          const badge = isFull
+            ? '<span class="badge full">Full</span>'
+            : `<span class="badge open">${spotsLeft} of ${s.capacity} spots open</span>`;
+          const names = signed
+            ? s.signedUp.map((n) => `<li>${esc(n)}</li>`).join('')
+            : '<li class="empty">No volunteers signed up yet</li>';
+          return `
+            <div class="shift ${isFull ? 'full' : ''}">
+              <div class="shift-header">
+                <span class="shift-title">${esc(s.day)} &middot; ${esc(s.slot)}</span>
+                ${badge}
+              </div>
+              <div class="signed-label">Signed up (${signed} of ${s.capacity})</div>
+              <ul class="names">${names}</ul>
+            </div>`;
+        }).join('');
+
+        // Rebuild the dropdown but keep the user's current choice.
+        const previous = $('shift').value;
+        $('shift').innerHTML = shifts.map((s) => {
+          const spotsLeft = s.capacity - s.signedUp.length;
+          return `<option value="${s.id}" ${spotsLeft <= 0 ? 'disabled' : ''}>
+            ${esc(s.day)} &middot; ${esc(s.slot)}${spotsLeft <= 0 ? ' (full)' : ` (${spotsLeft} open)`}
+          </option>`;
+        }).join('');
+        if (previous) $('shift').value = previous;
+
+        $('last-updated').textContent = `Updated ${new Date().toLocaleTimeString()}`;
+      } catch (err) {
+        $('last-updated').textContent = 'Could not refresh. Retrying…';
+      }
+    }
+
+    $('signup-form').onsubmit = async (e) => {
+      e.preventDefault();
+      const btn = $('submit-btn');
+      const msg = $('msg');
+      btn.disabled = true;
+      msg.className = 'msg';
+      msg.textContent = '';
+      try {
+        const res = await fetch(`/api/shifts/${$('shift').value}/signup`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: $('name').value.trim() }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Something went wrong. Please try again.');
+        msg.className = 'msg ok';
+        msg.textContent = 'Thank you. Your sign-up is confirmed.';
+        $('name').value = '';
+      } catch (err) {
+        msg.className = 'msg err';
+        msg.textContent = err.message;
+      } finally {
+        btn.disabled = false;
+        await loadShifts();
+      }
+    };
+
+    loadShifts();
+    setInterval(loadShifts, REFRESH_MS);
+  </script>
+</body>
+</html>
