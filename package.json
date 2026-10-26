@@ -1,0 +1,16 @@
+{
+  "name": "harbor-lights-shift-signup",
+  "version": "1.0.0",
+  "description": "Volunteer shift sign-up for Harbor Lights Youth Center",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
