@@ -2,7 +2,7 @@
 
 A small Node.js and Express app for Harbor Lights Youth Center - a nonprofit that runs after-school programs. Volunteers pick a shift, enter their name, and sign up. The page shows how many spots are left and who has already signed up for each shift.
 
-# Problem Statement
+# Problem Statement #1
 
 Harbor Lights Youth Center used a shared spreadsheet to manage volunteer shifts. It caused double-bookings, missing entries, and gaps in coverage.
 
@@ -87,10 +87,6 @@ Open `server.js` and edit the `shifts` list near the top:
 
 Restart the app after making changes.
 
-## Important: sign-ups are not saved
-
-Sign-ups are kept in the app's memory only. **If the app stops or the computer restarts, every sign-up is lost** and all shifts reset to empty. Until the app saves to a file or database, keep the app running continuously and keep a copy of the roster if you need a record.
-
 ## Running with Docker
 
 Docker packages the app and its Node.js version into one image, so the app runs the same way on any computer. This section assumes a `Dockerfile` sits next to `server.js`.
@@ -119,6 +115,40 @@ Sign-ups are stored inside the container, so **removing or recreating the contai
 - Run `npm start` (or the container) as a background service, or use a process manager such as `pm2`.
 - If the app is reachable from the internet, put it behind HTTPS.
 - Anyone who opens the page can see the names of volunteers who signed up, and anyone who can reach the API can add names. Only deploy it where that is acceptable.
+
+# Problem Statement #2
+
+Sign-ups are kept in the app's memory only. **If the app stops or the computer restarts, every sign-up is lost** and all shifts reset to empty. Until the app saves to a file or database, keep the app running continuously and keep a copy of the roster if you need a record.
+
+Restarting the container wipes out all volunteer sign-ups because the shifts were stored only in memory inside the container’s writable layer. The board president also wants a live count of remaining volunteer spots on the homepage, updated instantly after each signup.
+
+# Solution
+
+We will edit `server.js` to save the sign-ups to a file at `\app\data\shifts.json` and read that file when the app starts. The file will be created automatically when the first sign-up is made. The app will also send the updated shift list to the browser after each sign-up, so the homepage shows the current number of spots left.
+
+Below is a screenshot of the sign-up page after a few volunteers signed up. The remaining spots are updated instantly:
+
+![alt text](screenshots/sign-up_page_2.png)
+
+Below is a screenshot of the `shifts.json` file created with same sign-ups as above:
+
+![alt text](screenshots/shifts_json_file.png)
+
+**But when the container is removed or recreated, the sign-ups are lost again.** Docker gives Dana two ways to make a path survive outside a single container's lifecycle, and they solve different problems. To fix that, we will use below two solutions: Named volumes and Bind mounts.
+
+1. **Named volumes** 
+   - Create a named volume to store the `shifts.json` file outside the container. This way, even if the container is removed or recreated, the sign-ups persist.
+
+        ```
+     docker volume create shift-signup-data
+        ```
+
+    - Update the Docker run command to mount the named volume.
+        ```
+        docker run -d -p 3000:3000 -v shift-signup-data:/app/data \
+        --name shift-signup harborlights/shift-signup:dev
+        ```
+
 
 ## Troubleshooting
 
