@@ -148,7 +148,20 @@ Below is a screenshot of the `shifts.json` file created with same sign-ups as ab
         docker run -d -p 3000:3000 -v shift-signup-data:/app/data \
         --name shift-signup harborlights/shift-signup:dev
         ```
+        Below is a screenshot of the named volume created in a terminal: 
 
+        ![alt text](screenshots/docker_volume.png)
+        
+2. **Bind mounts**
+   - Use a bind mount to link a folder on the host machine to the container's `/app/data` directory. This way, the `shifts.json` file is stored on the host machine and persists even if the container is removed or recreated.
+
+        ```
+        docker run -d -p 3000:3000 -v /path/to/host/folder:/app/data \
+        --name shift-signup harborlights/shift-signup:dev
+        ```
+
+    - Replace `/path/to/host/folder` with the actual path on your host machine where you want to store the `shifts.json` file.
+    
 
 ## Troubleshooting
 
